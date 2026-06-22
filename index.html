@@ -4,261 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZipMerge</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Consolas&display=swap" rel="stylesheet">
+
+    <!-- Third-party libraries -->
     <script src="https://unpkg.com/pdf-lib@^1.11.2"></script>
     <script src="https://unpkg.com/downloadjs@1.4.7"></script>
-    <style>
-        :root {
-            --bg: #21222C;
-            --fg: #F8F8F2;
-            --selection: #383A59;
-            --comment: #565F89;
-            --cyan: #7DCFFF;
-            --green: #2EDDB5;
-            --orange: #FF9F1C;
-            --pink: #FF7ED4;
-            --purple: #C792EA;
-            --red: #FF6B6B;
-            --yellow: #F1F1A7;
-        }
-
-        body {
-            font-family: 'Consolas', monospace, Arial, sans-serif;
-            background-color: var(--bg);
-            color: var(--fg);
-            margin: 0;
-            padding: 20px;
-            line-height: 1.6;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        body.light-mode {
-            --bg: #EDF1E4;
-            --fg: #2B312C;
-            --selection: #D8DAD1;
-            --comment: #878D88;
-            --cyan: #3A8B84;
-            --green: #678C61;
-            --orange: #D68A46;
-            --pink: #D16B86;
-            --purple: #9F7BA9;
-            --red: #CA5B50;
-            --yellow: #C9A554;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: var(--selection);
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-            transition: background-color 0.3s ease;
-        }
-
-        h1 {
-            color: var(--purple);
-            text-align: center;
-            margin-bottom: 10px;
-            transition: color 0.3s ease;
-        }
-
-        p.subtitle, a.project-link {
-            color: var(--comment);
-            text-align: center;
-            margin: 5px 0;
-            display: block;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        a.project-link {
-            color: var(--purple);
-            font-weight: bold;
-        }
-
-        .input-group {
-            margin: 20px 0;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--cyan);
-            font-weight: bold;
-            transition: color 0.3s ease;
-        }
-
-        input[type="file"] {
-            width: 97%;
-            padding: 10px;
-            background-color: var(--bg);
-            border: 2px solid var(--comment);
-            border-radius: 4px;
-            color: var(--fg);
-            font-family: inherit;
-            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-        }
-
-        input[type="file"]:focus {
-            outline: none;
-            border-color: var(--purple);
-        }
-
-        button {
-            padding: 12px 24px;
-            background-color: var(--purple);
-            color: var(--bg);
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            font-family: inherit;
-            transition: all 0.3s ease;
-            display: block;
-            margin: 30px auto;
-            width: 200px;
-            text-align: center;
-        }
-
-        button:hover {
-            background-color: var(--pink);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(199, 146, 234, 0.4);
-        }
-
-        button:disabled {
-            background-color: var(--comment);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .file-info {
-            margin: 10px 0;
-            font-size: 14px;
-            color: var(--green);
-            padding: 8px;
-            background-color: rgba(46, 221, 181, 0.1);
-            border-radius: 4px;
-            border-left: 3px solid var(--green);
-            transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
-        }
-
-        .progress-container {
-            margin: 30px 0;
-        }
-
-        .progress-label {
-            color: var(--cyan);
-            margin-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            transition: color 0.3s ease;
-        }
-
-        .progress {
-            width: 100%;
-            background-color: var(--selection);
-            border-radius: 4px;
-            overflow: hidden;
-            height: 20px;
-            transition: background-color 0.3s ease;
-        }
-
-        #progressBar {
-            height: 100%;
-            background: linear-gradient(90deg, var(--purple), var(--pink));
-            width: 0%;
-            transition: width 0.3s ease, background 0.3s ease;
-        }
-
-        .status {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 4px;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .status.success {
-            background-color: rgba(46, 221, 181, 0.2);
-            color: var(--green);
-            border-left: 3px solid var(--green);
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-        }
-
-        .status.error {
-            background-color: rgba(255, 107, 107, 0.2);
-            color: var(--red);
-            border-left: 3px solid var(--red);
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-        }
-
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--selection);
-            transition: background-color 0.3s ease;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--purple);
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--pink);
-        }
-
-        .theme-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 10px 20px;
-            background-color: var(--purple);
-            color: var(--bg);
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-family: inherit;
-            font-weight: bold;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        .theme-toggle:hover {
-            background-color: var(--pink);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(199, 146, 234, 0.4);
-        }
-    </style>
-    <link href="https://fonts.googleapis.com/css2?family=Consolas&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Alucard&display=swap" rel="stylesheet">
+    <!-- SheetJS for Excel support in the ID processor.
+         Remove this tag if features.enableExcel in js/config.js is false. -->
+    <script src="https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
-<button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+<button id="themeToggle" class="theme-toggle" type="button">Toggle Theme</button>
+
+<!-- Student ID Processor (on top, per request) -->
 <div class="container">
-    <h1>Bubble Sheet + Written Sheet Merger</h1>
-    <a href="https://github.com/CalebHendren/zipmerge" class="project-link" target="_blank">Source Code</a>
-    <a href="https://github.com/CalebHendren/zipmerge/blob/master/README.md" class="project-link" target="_blank">Tutorial</a>
-    <a href="https://github.com/CalebHendren/zipmerge/tree/master/Example" class="project-link" target="_blank">Example Input/Output</a>
+    <h1 id="idProcessorTitle">Student ID Processor for ZipGrade</h1>
+    <p class="subtitle" id="idProcessorSubtitle"></p>
 
-    <div class="input-group">
-        <label for="sheetPack">Bubble Sheets Sheets (PDF only):</label>
-        <input type="file" id="sheetPack" accept=".pdf">
-        <div id="sheetPackInfo" class="file-info">No file selected</div>
+    <div class="input-group drop-zone">
+        <label for="studentIdFile">Student IDs file (.csv, .xlsx, .xls):</label>
+        <input type="file" id="studentIdFile">
+        <div id="studentIdFileInfo" class="file-info">No file selected</div>
     </div>
 
-    <div class="input-group">
-        <label for="writtenAnswer">Written Answer Sheets (PDF only):</label>
-        <input type="file" id="writtenAnswer" accept=".pdf">
-        <div id="writtenAnswerInfo" class="file-info">No file selected</div>
+    <button id="processIdsBtn" type="button" disabled>Process IDs</button>
+    <div id="idStatus" class="status"></div>
+</div>
+
+<!-- Bubble Sheet + Written Sheet Merger -->
+<div class="container">
+    <h1 id="mergerTitle">Bubble Sheet + Written Sheet Merger</h1>
+    <a id="link-sourceCode" class="project-link" target="_blank" rel="noopener">Source Code</a>
+    <a id="link-tutorial" class="project-link" target="_blank" rel="noopener">Tutorial</a>
+    <a id="link-examples" class="project-link" target="_blank" rel="noopener">Example Input/Output</a>
+
+    <div class="input-group drop-zone">
+        <label for="bubbleSheet">Bubble Sheets (PDF only):</label>
+        <input type="file" id="bubbleSheet">
+        <div id="bubbleSheetInfo" class="file-info">No file selected</div>
     </div>
 
-    <button id="processBtn" onclick="processPdf()">Merge PDFs</button>
+    <div class="input-group drop-zone">
+        <label for="writtenSheet">Written Answer Sheets (PDF only):</label>
+        <input type="file" id="writtenSheet">
+        <div id="writtenSheetInfo" class="file-info">No file selected</div>
+    </div>
+
+    <button id="processBtn" type="button" disabled>Merge PDFs</button>
 
     <div class="progress-container">
         <div class="progress-label">
@@ -266,261 +59,18 @@
             <span id="progressPercent">0%</span>
         </div>
         <div class="progress">
-            <div id="progressBar"></div>
+            <div id="progressBar" class="progress-bar"></div>
         </div>
     </div>
     <div id="status" class="status"></div>
 </div>
 
-<div class="container" style="margin-top: 40px;">
-    <h1>Student ID Processor for ZipGrade</h1>
-    <p class="subtitle" style="font-size: 0.9em; color: var(--comment);">
-        Converts eLearn IDs (e.g., #A00123456) to ZipGrade compatible IDs (e.g., 123456) by simply removing the unnecessary #A00.
-        <br>Processes the first column of a CSV file.
-    </p>
-
-    <div class="input-group">
-        <label for="studentIdFile">Student IDs CSV File (.csv only):</label>
-        <input type="file" id="studentIdFile" accept=".csv">
-        <div id="studentIdFileInfo" class="file-info">No file selected</div>
-    </div>
-
-    <button id="processIdsBtn" onclick="processStudentIds()">Process IDs</button>
-    <div id="idStatus" class="status"></div>
-</div>
-
-<script>
-    document.getElementById('sheetPack').addEventListener('change', function(e) {
-        updateFileInfo(e, 'sheetPackInfo');
-        toggleProcessButton();
-    });
-
-    document.getElementById('writtenAnswer').addEventListener('change', function(e) {
-        updateFileInfo(e, 'writtenAnswerInfo');
-        toggleProcessButton();
-    });
-
-    function updateFileInfo(event, elementId) {
-        const file = event.target.files[0];
-        const infoDiv = document.getElementById(elementId);
-        if (file) {
-            infoDiv.textContent = `${file.name} (${(file.size/1024/1024).toFixed(2)} MB)`;
-        } else {
-            infoDiv.textContent = 'No file selected';
-        }
-    }
-
-    function toggleProcessButton() {
-        const btn = document.getElementById('processBtn');
-        const hasFiles = document.getElementById('sheetPack').files.length > 0 &&
-            document.getElementById('writtenAnswer').files.length > 0;
-        btn.disabled = !hasFiles;
-    }
-
-    async function loadPdf(file) {
-        const arrayBuffer = await file.arrayBuffer();
-        return PDFLib.PDFDocument.load(arrayBuffer);
-    }
-
-    function updateProgress(percent) {
-        document.getElementById('progressBar').style.width = `${percent}%`;
-        document.getElementById('progressPercent').textContent = `${Math.round(percent)}%`;
-    }
-
-    async function processPdf() {
-        const statusElement = document.getElementById('status');
-        const processBtn = document.getElementById('processBtn');
-
-        statusElement.textContent = 'Processing...';
-        statusElement.className = 'status';
-        updateProgress(0);
-        processBtn.disabled = true;
-
-        try {
-            const sheetPackFile = document.getElementById('sheetPack').files[0];
-            const writtenAnswerFile = document.getElementById('writtenAnswer').files[0];
-
-            const originalName = sheetPackFile.name.replace(/\.pdf$/i, '');
-            const outputFilename = `${originalName}_merged.pdf`;
-
-            updateProgress(10);
-            const [testSheetsPdf, answerSheetsPdf] = await Promise.all([
-                loadPdf(sheetPackFile),
-                loadPdf(writtenAnswerFile)
-            ]);
-            updateProgress(30);
-
-            const mergedPdf = await PDFLib.PDFDocument.create();
-            const testPages = await mergedPdf.copyPages(testSheetsPdf, testSheetsPdf.getPageIndices());
-
-            let blankPageDimensions = null;
-            if (answerSheetsPdf.getPageCount() > 0) {
-                const [firstAnswerPage] = await mergedPdf.copyPages(answerSheetsPdf, [0]);
-                blankPageDimensions = [firstAnswerPage.getWidth(), firstAnswerPage.getHeight()];
-            }
-
-            updateProgress(50);
-
-            for (let i = 0; i < testPages.length; i++) {
-                mergedPdf.addPage(testPages[i]);
-
-                if (answerSheetsPdf.getPageCount() > 0) {
-                    const answerPageIndices = answerSheetsPdf.getPageIndices();
-                    const currentAnswerPages = await mergedPdf.copyPages(answerSheetsPdf, answerPageIndices);
-
-                    currentAnswerPages.forEach(page => mergedPdf.addPage(page));
-
-                    const answerPagesCount = currentAnswerPages.length;
-                    const needsBlank = answerPagesCount % 2 === 0 && i < testPages.length - 1;
-
-                    if (needsBlank && blankPageDimensions) {
-                        mergedPdf.addPage(blankPageDimensions);
-                    }
-                }
-
-                updateProgress(50 + (i / testPages.length) * 40);
-            }
-
-            updateProgress(90);
-            const pdfBytes = await mergedPdf.save();
-            download(pdfBytes, outputFilename, "application/pdf");
-
-            updateProgress(100);
-            statusElement.textContent = `Success! Saved as ${outputFilename}`;
-            statusElement.className = 'status success';
-        } catch (error) {
-            console.error(error);
-            statusElement.textContent = `Error: ${error.message}`;
-            statusElement.className = 'status error';
-            updateProgress(0);
-        } finally {
-            processBtn.disabled = false;
-        }
-    }
-
-    // For Student ID Processor
-    const studentIdFileInput = document.getElementById('studentIdFile');
-    const processIdsButtonElement = document.getElementById('processIdsBtn');
-
-    if (studentIdFileInput) {
-        studentIdFileInput.addEventListener('change', function(e) {
-            updateFileInfo(e, 'studentIdFileInfo'); // Reuses existing updateFileInfo
-            toggleProcessIdsButtonState();
-        });
-    }
-
-    function toggleProcessIdsButtonState() {
-        if (processIdsButtonElement && studentIdFileInput) {
-            processIdsButtonElement.disabled = studentIdFileInput.files.length === 0;
-        }
-    }
-
-    function formatStudentIdCore(idString) {
-        let currentId = idString.trim();
-        if (currentId.startsWith("#A00")) {
-            currentId = currentId.substring(4);
-        }
-        return currentId.replace(/\D/g, ''); // Return only digits
-    }
-
-    async function processStudentIds() {
-        const statusElement = document.getElementById('idStatus');
-        const processBtn = document.getElementById('processIdsBtn'); // processIdsButtonElement can be used here too
-        // const studentIdFileElement = document.getElementById('studentIdFile'); // Already studentIdFileInput
-
-        statusElement.textContent = 'Processing IDs...';
-        statusElement.className = 'status'; // Reset status style
-        processBtn.disabled = true;
-
-        try {
-            const csvFile = studentIdFileInput.files[0];
-            if (!csvFile) {
-                throw new Error("No CSV file selected.");
-            }
-
-            const originalName = csvFile.name.replace(/\.csv$/i, '');
-            const outputFilename = `${originalName}_processed_IDs.csv`;
-
-            const fileContent = await csvFile.text();
-            const lines = fileContent.split(/\r\n|\r|\n/);
-            const processedLines = [];
-
-            for (let i = 0; i < lines.length; i++) {
-                const line = lines[i];
-
-                if (line.trim() === '') {
-                    if (i === lines.length - 1 && processedLines.length > 0 && processedLines[processedLines.length-1].trim() === '') {
-                        continue;
-                    } else if (i === lines.length -1 && lines.length > 1) {
-                        continue;
-                    } else if (lines.length === 1) {
-                         processedLines.push('');
-                         continue;
-                    } else if (i < lines.length -1 ) {
-                         processedLines.push('');
-                         continue;
-                    }
-                }
-
-
-                const columns = line.split(','); // Simple CSV split
-                let firstColumnValue = columns[0];
-                let processedFirstColumn;
-
-                if (i === 0) { // Header row: try to preserve text headers
-                    const formattedHeaderCell = formatStudentIdCore(firstColumnValue);
-                    if (/[a-zA-Z]/.test(firstColumnValue) && 
-                        (formattedHeaderCell === "" || (/^\d+$/.test(formattedHeaderCell) && firstColumnValue.trim() !== formattedHeaderCell))) {
-                        processedFirstColumn = firstColumnValue; 
-                    } else {
-                        processedFirstColumn = formattedHeaderCell;
-                    }
-                } else { // Data rows: always apply formatting
-                    processedFirstColumn = formatStudentIdCore(firstColumnValue);
-                }
-
-                if (columns.length > 1) {
-                    columns[0] = processedFirstColumn;
-                    processedLines.push(columns.join(','));
-                } else {
-                    processedLines.push(processedFirstColumn);
-                }
-            }
-
-            while (processedLines.length > 0 && processedLines[processedLines.length - 1].trim() === "") {
-                processedLines.pop();
-            }
-
-            const processedCsvContent = processedLines.join('\n');
-            download(new Blob([processedCsvContent], { type: 'text/csv;charset=utf-8;' }), outputFilename, "text/csv");
-
-            statusElement.textContent = `Success! Processed IDs saved as ${outputFilename}`;
-            statusElement.className = 'status success';
-
-        } catch (error) {
-            console.error("Error processing student IDs:", error);
-            statusElement.textContent = `Error: ${error.message}`;
-            statusElement.className = 'status error';
-        } finally {
-            processBtn.disabled = false;
-        }
-    }
-
-    function toggleTheme() {
-        document.body.classList.toggle('light-mode');
-        localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
-    }
-
-    // Load saved theme preference
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'light') {
-        document.body.classList.add('light-mode');
-    }
-
-    toggleProcessButton(); 
-    if (document.getElementById('processIdsBtn')) {
-        toggleProcessIdsButtonState();
-    }
-</script>
+<!-- App scripts (config first; main last) -->
+<script src="js/config.js"></script>
+<script src="js/file-utils.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/id-processor.js"></script>
+<script src="js/pdf-merger.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>

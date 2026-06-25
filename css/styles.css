@@ -1,0 +1,258 @@
+:root {
+    --bg: #21222C;
+    --fg: #F8F8F2;
+    --selection: #383A59;
+    --comment: #565F89;
+    --cyan: #7DCFFF;
+    --green: #2EDDB5;
+    --orange: #FF9F1C;
+    --pink: #FF7ED4;
+    --purple: #C792EA;
+    --red: #FF6B6B;
+    --yellow: #F1F1A7;
+}
+
+body {
+    font-family: 'Consolas', monospace, Arial, sans-serif;
+    background-color: var(--bg);
+    color: var(--fg);
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.light-mode {
+    --bg: #EDF1E4;
+    --fg: #2B312C;
+    --selection: #D8DAD1;
+    --comment: #878D88;
+    --cyan: #3A8B84;
+    --green: #678C61;
+    --orange: #D68A46;
+    --pink: #D16B86;
+    --purple: #9F7BA9;
+    --red: #CA5B50;
+    --yellow: #C9A554;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: var(--selection);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease;
+}
+
+.container + .container {
+    margin-top: 40px;
+}
+
+h1 {
+    color: var(--purple);
+    text-align: center;
+    margin-bottom: 10px;
+    transition: color 0.3s ease;
+}
+
+p.subtitle,
+a.project-link {
+    color: var(--comment);
+    text-align: center;
+    margin: 5px 0;
+    display: block;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+p.subtitle {
+    font-size: 0.9em;
+}
+
+a.project-link {
+    color: var(--purple);
+    font-weight: bold;
+}
+
+.input-group {
+    margin: 20px 0;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--cyan);
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+input[type="file"] {
+    width: 97%;
+    padding: 10px;
+    background-color: var(--bg);
+    border: 2px solid var(--comment);
+    border-radius: 4px;
+    color: var(--fg);
+    font-family: inherit;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+input[type="file"]:focus {
+    outline: none;
+    border-color: var(--purple);
+}
+
+.drop-zone {
+    position: relative;
+}
+
+.drop-zone.drag-over input[type="file"] {
+    border-color: var(--purple);
+    background-color: rgba(199, 146, 234, 0.1);
+}
+
+button {
+    padding: 12px 24px;
+    background-color: var(--purple);
+    color: var(--bg);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    font-family: inherit;
+    transition: all 0.3s ease;
+    display: block;
+    margin: 30px auto;
+    width: 200px;
+    text-align: center;
+}
+
+button:hover:not(:disabled) {
+    background-color: var(--pink);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(199, 146, 234, 0.4);
+}
+
+button:disabled {
+    background-color: var(--comment);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.file-info {
+    margin: 10px 0;
+    font-size: 14px;
+    color: var(--green);
+    padding: 8px;
+    background-color: rgba(46, 221, 181, 0.1);
+    border-radius: 4px;
+    border-left: 3px solid var(--green);
+    transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.progress-container {
+    margin: 30px 0;
+}
+
+.progress-label {
+    color: var(--cyan);
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    transition: color 0.3s ease;
+}
+
+.progress {
+    width: 100%;
+    background-color: var(--bg);
+    border-radius: 4px;
+    overflow: hidden;
+    height: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--purple), var(--pink));
+    width: 0%;
+    transition: width 0.3s ease, background 0.3s ease;
+}
+
+.status {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.status:empty {
+    display: none;
+}
+
+.status.success {
+    background-color: rgba(46, 221, 181, 0.2);
+    color: var(--green);
+    border-left: 3px solid var(--green);
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.status.error {
+    background-color: rgba(255, 107, 107, 0.2);
+    color: var(--red);
+    border-left: 3px solid var(--red);
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.status.info {
+    background-color: rgba(125, 207, 255, 0.15);
+    color: var(--cyan);
+    border-left: 3px solid var(--cyan);
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--selection);
+    transition: background-color 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--purple);
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--pink);
+}
+
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background-color: var(--purple);
+    color: var(--bg);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    width: auto;
+    margin: 0;
+    display: inline-block;
+}
+
+.theme-toggle:hover {
+    background-color: var(--pink);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(199, 146, 234, 0.4);
+}
